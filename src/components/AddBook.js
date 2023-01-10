@@ -60,13 +60,6 @@ const AddBook = () => {
     };
     file && uploadFile();
   }, [file]);
-  const clearForm = () => {
-    titleRef.current.value = "";
-    authorRef.current.value = "";
-    descriptionRef.current.value = "";
-    imageRef.current.value = null;
-    setBookType("Wybierz...");
-  };
 
   const addBookHandler = async (e) => {
     e.preventDefault();
@@ -79,15 +72,16 @@ const AddBook = () => {
       description: descriptionRef.current.value,
       id: new Date().getTime(),
     }));
-    try {
-      await addDoc(colRef, data);
-      alert("Dodano książkę");
-      console.log(colRef);
-      console.log(file);
-      clearForm();
-    } catch (err) {
-      console.log(err);
-    }
+    await addDoc(colRef, data);
+    // titleRef.current.value = "";
+    // authorRef.current.value = "";
+    // descriptionRef.current.value = "";
+    // imageRef.current.value = null;
+    // setBookType("Wybierz...");
+    alert("Dodano książkę");
+    console.log(data);
+    console.log(colRef);
+    console.log(file);
   };
 
   return (

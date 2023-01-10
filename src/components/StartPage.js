@@ -1,57 +1,75 @@
 import { useEffect, useState } from "react";
 import { getDocs } from "firebase/firestore";
 import { colRef } from "../firebase/firebase";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Alert } from "react-bootstrap";
+import { Loading } from "./Loading";
 
-const StartPage = () => {
-  const [booksList, setBooksList] = useState([]);
+export default function StartPage() {
+  const [booksList, setBooksList] = useState(undefined);
+  const [error, setError] = useState(undefined);
+  const isLoading = booksList == null && error == null;
 
   useEffect(() => {
     const getBooks = async () => {
-      const data = await getDocs(colRef);
-      setBooksList(
-        data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }))
-      );
+      try {
+        const data = await getDocs(colRef);
+        setBooksList(
+          data.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }))
+        );
+      } catch (e) {
+        console.warn(`Fetch books exception ${e}`);
+        setError(e);
+      }
     };
     getBooks();
   }, []);
 
   return (
-    <Card
-      style={{
-        border: "none",
-        height: "100%",
-        backgroundColor: "rgb(65,66,70)",
-        background:
-          "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
-      }}
-      className="text-center text-white"
-    >
-      <Card.Body>
-        {booksList.map((book) => {
-          return (
-            <Card.Body className="d-flex flex-row" key={book.id}>
-              <Card.Img
-                src={book.img}
-                variant="top"
-                style={{ width: "14rem" }}
-              />
-              <Card.Body>
-                <Card.Title>{book.title}</Card.Title>
-                <Card.Title>{book.author}</Card.Title>
-                <Card.Title>{book.type}</Card.Title>
-                <Card.Text>{book.description}</Card.Text>
-                <Button>Czytaj Więcej</Button>
+    <div style={{ padding: '20px 5vw 20px 5vw' }}>
+      {isLoading && <Loading centered />}
+      {!error ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: 10
+          }}
+        >
+          {booksList?.map((book, index) => (
+            <Card
+              key={`${book.id}-${index}`}
+              style={{
+                border: "none",
+                height: "100%",
+                backgroundColor: "rgb(65,66,70)",
+                background:
+                  "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
+              }}
+              className="text-center text-white"
+            >
+              <Card.Body className="d-flex flex-row" key={book.id}>
+                <Card.Img
+                  src={book.img}
+                  variant="top"
+                  style={{ width: "14rem" }}
+                />
+                <Card.Body>
+                  <Card.Title>{book.title}</Card.Title>
+                  <Card.Title>{book.author}</Card.Title>
+                  <Card.Title>{book.type}</Card.Title>
+                  <Card.Text>{book.description}</Card.Text>
+                  <Button>Czytaj Więcej</Button>
+                </Card.Body>
               </Card.Body>
-            </Card.Body>
-          );
-        })}
-      </Card.Body>
-    </Card>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Alert variant="danger">{error}</Alert>
+      )}
+    </div>
   );
-};
-
-export default StartPage;
+}

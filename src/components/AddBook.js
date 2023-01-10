@@ -1,87 +1,63 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
+import React, { useMemo, useRef, useState } from "react";
+import { Card, Form, Button, ProgressBar, Spinner } from "react-bootstrap";
 import { colRef } from "../firebase/firebase";
 import { addDoc } from "firebase/firestore";
 import { storage } from "../firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useNavigate } from "react-router-dom";
 
-const AddBook = () => {
-  const titleRef = useRef();
-  const authorRef = useRef();
-  const descriptionRef = useRef();
-  const typeRef = useRef();
-  const imageRef = useRef();
+const bookTypes = [
+  "Kryminał",
+  "Literatura Piękna",
+  "Biografia",
+  "Horror",
+  "Fantasy",
+  "Sci-Fi",
+  "Romans",
+  "Historyczna",
+];
 
-  const [bookType, setBookType] = useState("");
-  const [file, setFile] = useState(null);
-  const [data, setData] = useState({
-    title: "",
-    author: "",
-    type: "",
-    description: "",
-    url: "",
-    id: "",
-    raiting: null,
-    comments: [],
-  });
+export default function AddBook() {
+  const navigate = useNavigate();
+  const [fileInProgress, setFileInProgress] = useState(false);
+  const [fileUrl, setFileUrl] = useState(undefined);
 
-  useEffect(() => {
-    const uploadFile = () => {
-      const name = new Date().getTime() + file.name;
-      const imageRef = ref(storage, `images/${name}`);
-      const uploadTask = uploadBytesResumable(imageRef, file);
+  const [title, setTitle] = useState(undefined);
+  const [author, setAuthor] = useState(undefined);
+  const [type, setType] = useState(undefined);
+  const [description, setDescription] = useState(undefined);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-              break;
-          }
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setData((prev) => ({ ...prev, img: downloadURL }));
-          });
-        }
-      );
-    };
-    file && uploadFile();
-  }, [file]);
+  const [validated, setValidated] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const addBookHandler = async (e) => {
+    const form = e.currentTarget;
+    setValidated(true);
     e.preventDefault();
-    console.log(file);
-    setData((prev) => ({
-      ...prev,
-      title: titleRef.current.value,
-      author: authorRef.current.value,
-      type: typeRef.current.value,
-      description: descriptionRef.current.value,
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+      return;
+    }
+
+    const document = {
       id: new Date().getTime(),
-    }));
-    await addDoc(colRef, data);
-    // titleRef.current.value = "";
-    // authorRef.current.value = "";
-    // descriptionRef.current.value = "";
-    // imageRef.current.value = null;
-    // setBookType("Wybierz...");
-    alert("Dodano książkę");
-    console.log(data);
-    console.log(colRef);
-    console.log(file);
+      img: fileUrl,
+      title,
+      author,
+      type,
+      description,
+    };
+
+    try {
+      setIsUploading(true);
+      await addDoc(colRef, document);
+      navigate("/");
+    } catch (e) {
+      console.warn(`addDoc exception ${e}`);
+      //TODO show error to the User
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -99,34 +75,45 @@ const AddBook = () => {
           className="w-50 m-auto"
           onSubmit={addBookHandler}
           style={{ height: "100vh", minWidth: "250px" }}
+          noValidate
+          validated={validated}
         >
           <Form.Group id="title">
             <Form.Label>Tytuł</Form.Label>
-            <Form.Control type="text" ref={titleRef} required />
+            <Form.Control
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Tytuł"
+            />
           </Form.Group>
           <Form.Group id="author">
             <Form.Label>Autor</Form.Label>
-            <Form.Control type="text" ref={authorRef} required />
+            <Form.Control
+              type="text"
+              required
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Autor"
+            />
           </Form.Group>
           <Form.Group id="type">
             <Form.Label>Gatunek</Form.Label>
-            <select
-              id="inputType"
-              className="form-control"
-              ref={typeRef}
-              value={bookType}
-              onChange={(event) => setBookType(event.target.value)}
+            <Form.Control
+              as="select"
+              type="select"
+              value={type}
+              onChange={(event) => setType(event.target.value)}
+              required
             >
-              <option>Wybierz...</option>
-              <option>Kryminał</option>
-              <option>Literatura Piękna</option>
-              <option>Biografia</option>
-              <option>Horror</option>
-              <option>Fantasy</option>
-              <option>Sci-Fi</option>
-              <option>Romans</option>
-              <option>Historyczna</option>
-            </select>
+              <option value={""}>Wybierz...</option>
+              {bookTypes.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </Form.Control>
           </Form.Group>
           <Form.Group id="description">
             <Form.Label>Opis</Form.Label>
@@ -134,27 +121,93 @@ const AddBook = () => {
               className="form-control"
               type="textArea"
               rows="6"
-              ref={descriptionRef}
               required
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </Form.Group>
           <Form.Group id="image">
             <Form.Label>Okładka</Form.Label>
-            <Form.Control
-              type="file"
-              ref={imageRef}
-              onChange={(event) => {
-                setFile(event.target.files[0]);
-              }}
+            <FileUploader
+              setFileUrl={setFileUrl}
+              fileInProgress={fileInProgress}
+              setFileInProgress={setFileInProgress}
             />
           </Form.Group>
-          <Button className="mt-2" type="submit">
+          <Button
+            className="mt-2"
+            type="submit"
+            disabled={isUploading || fileInProgress}
+          >
+            {isUploading && (
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            )}
             Zatwierdź
           </Button>
         </Form>
       </Card.Body>
     </Card>
   );
-};
+}
 
-export default AddBook;
+function FileUploader({ setFileUrl, fileInProgress, setFileInProgress }) {
+  const [progress, setProgress] = useState(undefined);
+
+  const startUploading = (file) => {
+    const name = new Date().getTime() + file.name;
+    const imageRef = ref(storage, `images/${name}`);
+    const uploadTask = uploadBytesResumable(imageRef, file);
+    setProgress(undefined);
+    setFileInProgress(true);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const p = parseInt(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(p);
+        console.log(`${p}% uploaded`);
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+          default:
+            break;
+        }
+      },
+      (error) => {
+        console.log(error);
+        setFileInProgress(false);
+      },
+      async () => {
+        const fileUrl = await getDownloadURL(uploadTask.snapshot.ref);
+        setFileUrl(fileUrl);
+        setFileInProgress(false);
+      }
+    );
+  };
+
+  return (
+    <div>
+      <Form.Control
+        disabled={fileInProgress}
+        type="file"
+        required
+        onChange={(event) => {
+          startUploading(event.target.files[0]);
+        }}
+      />
+      {progress != null && <ProgressBar now={progress} />}
+    </div>
+  );
+}

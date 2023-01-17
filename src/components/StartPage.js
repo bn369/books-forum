@@ -3,11 +3,13 @@ import { getDocs } from "firebase/firestore";
 import { colRef } from "../firebase/firebase";
 import { Card, Button, Alert } from "react-bootstrap";
 import { Loading } from "./Loading";
+import { useNavigate } from "react-router-dom";
 
 export default function StartPage() {
   const [booksList, setBooksList] = useState(undefined);
   const [error, setError] = useState(undefined);
   const isLoading = booksList == null && error == null;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getBooks = async () => {
@@ -28,14 +30,21 @@ export default function StartPage() {
   }, []);
 
   return (
-    <div style={{ padding: '20px 5vw 20px 5vw' }}>
+    <div
+      style={{
+        padding: "20px 5vw 20px 5vw",
+        background:
+          "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
+        height: "100vh",
+      }}
+    >
       {isLoading && <Loading centered />}
       {!error ? (
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 10
+            gridTemplateColumns: "1fr",
+            gap: 10,
           }}
         >
           {booksList?.map((book, index) => (
@@ -44,11 +53,11 @@ export default function StartPage() {
               style={{
                 border: "none",
                 height: "100%",
-                backgroundColor: "rgb(65,66,70)",
-                background:
-                  "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
+                // backgroundColor: "rgb(65,66,70)",
+                // background:
+                //   "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
               }}
-              className="text-center text-white"
+              className="text-center text-black"
             >
               <Card.Body className="d-flex flex-row" key={book.id}>
                 <Card.Img
@@ -61,7 +70,9 @@ export default function StartPage() {
                   <Card.Title>{book.author}</Card.Title>
                   <Card.Title>{book.type}</Card.Title>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button>Czytaj Więcej</Button>
+                  <Button onClick={() => navigate(`book/${book.id}`)}>
+                    Czytaj Więcej
+                  </Button>
                 </Card.Body>
               </Card.Body>
             </Card>

@@ -2,6 +2,7 @@ import AddBook from "./components/AddBook";
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import StartPage from "./components/StartPage";
+import BookDetails from "./components/BookDetails";
 import Login from "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
@@ -22,6 +23,7 @@ function App() {
                 </ProtectedRoutes>
               }
             />
+            <Route path="/book/:book_id" element={<BookDetails />} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </Router>

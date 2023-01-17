@@ -6,15 +6,23 @@ import BookDetails from "./components/BookDetails";
 import Login from "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
+import { useState } from "react";
 
 function App() {
+  const [filterByType, setFilterByType] = useState("wszystkie");
   return (
     <>
       <AuthProvider>
         <Router>
-          <Navbar />
+          <Navbar
+            setFilterByType={setFilterByType}
+            filterByType={filterByType}
+          />
           <Routes>
-            <Route path="/" element={<StartPage />} />
+            <Route
+              path="/"
+              element={<StartPage filterByType={filterByType} />}
+            />
             <Route
               path="/add-book"
               element={

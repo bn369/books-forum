@@ -5,8 +5,7 @@ import { Card, Button, Alert } from "react-bootstrap";
 import { Loading } from "./Loading";
 import { useNavigate } from "react-router-dom";
 
-export default function StartPage({ filterByType }) {
-  const [booksList, setBooksList] = useState(undefined);
+export default function StartPage({ filterByType, booksList, setBooksList }) {
   const [error, setError] = useState(undefined);
   const isLoading = booksList == null && error == null;
   const navigate = useNavigate();

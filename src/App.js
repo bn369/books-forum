@@ -10,6 +10,7 @@ import { useState } from "react";
 
 function App() {
   const [filterByType, setFilterByType] = useState("wszystkie");
+  const [booksList, setBooksList] = useState(undefined);
   return (
     <>
       <AuthProvider>
@@ -21,7 +22,13 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={<StartPage filterByType={filterByType} />}
+              element={
+                <StartPage
+                  filterByType={filterByType}
+                  booksList={booksList}
+                  setBooksList={setBooksList}
+                />
+              }
             />
             <Route
               path="/add-book"
@@ -31,7 +38,10 @@ function App() {
                 </ProtectedRoutes>
               }
             />
-            <Route path="/book/:book_id" element={<BookDetails />} />
+            <Route
+              path="/book/:book_id"
+              element={<BookDetails booksList={booksList} />}
+            />
             <Route path="/login" element={<Login />} />
           </Routes>
         </Router>

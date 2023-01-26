@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Card, Form, Button, ProgressBar, Spinner } from "react-bootstrap";
 import { colRef } from "../firebase/firebase";
 import { addDoc } from "firebase/firestore";
@@ -42,6 +42,7 @@ export default function AddBook() {
     const document = {
       id: new Date().getTime(),
       img: fileUrl,
+      raiting: [],
       title,
       author,
       type,

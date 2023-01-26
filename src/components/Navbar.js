@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navbar,
   Container,
@@ -10,10 +10,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 
-const NavigationBar = ({ isAuth, setIsAuth }) => {
+const NavigationBar = ({ isAuth, setFilterByType }) => {
   const navigate = useNavigate();
 
   const navigateToStartPage = () => {
+    setFilterByType("Wszystkie");
     navigate("/");
   };
   const navigateToLogin = () => {
@@ -31,8 +32,13 @@ const NavigationBar = ({ isAuth, setIsAuth }) => {
       console.log(e.message);
     }
   };
+
   const addBookHandler = () => {
     navigate("/add-book");
+  };
+
+  const handleChange = (e) => {
+    setFilterByType(e);
   };
 
   return (
@@ -71,18 +77,34 @@ const NavigationBar = ({ isAuth, setIsAuth }) => {
               title="Rankingi"
               id="basic-nav-dropdown"
               menuVariant="dark"
+              onSelect={handleChange}
             >
-              <NavDropdown.Item href="#action/3.1">Kryminał</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item href="#action/3.1" eventKey="Kryminał">
+                Kryminał
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2" eventKey="Literatura Piękna">
                 Literatura Piękna
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Biografia</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.4">Horror</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.5">Fantasy</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.6">Sci-Fi</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.7">Romans</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.8">
+              <NavDropdown.Item href="#action/3.3" eventKey="Biografia">
+                Biografia
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.4" eventKey="Horror">
+                Horror
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.5" eventKey="Fantasy">
+                Fantasy
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.6" eventKey="Sci-Fi">
+                Sci-Fi
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.7" eventKey="Romans">
+                Romans
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.8" eventKey="Historyczna">
                 Historyczna
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.9" eventKey="Wszystkie">
+                Wszystkie
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>

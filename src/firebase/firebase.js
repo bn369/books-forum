@@ -1,5 +1,5 @@
 import firebase from "firebase/compat/app";
-import { getFirestore, collection } from "firebase/firestore";
+import { getFirestore, collection, doc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 // import "firebase/compat/auth";
@@ -15,13 +15,18 @@ const app = firebase.initializeApp({
 
 export const db = getFirestore();
 
-export const colRef = collection(db, "books");
+export const BOOKS_COLLECTION = "books"
+
+export const colRef = collection(db, BOOKS_COLLECTION);
+export const bookDoc = (id) => doc(db, BOOKS_COLLECTION, id)
 
 export const storage = getStorage(app);
 
 export const auth = getAuth(app);
 
 export const provider = new GoogleAuthProvider();
+
+
 
 // export const auth = app.auth();
 export default app;

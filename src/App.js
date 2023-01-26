@@ -38,10 +38,7 @@ function App() {
                 </ProtectedRoutes>
               }
             />
-            <Route
-              path="/book/:book_id"
-              element={<BookDetails booksList={booksList} />}
-            />
+            <Route path="/book/:book_id" element={<BookDetails />} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </Router>

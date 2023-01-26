@@ -1,17 +1,24 @@
 import React, { useState } from "react";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, query, updateDoc, where } from "firebase/firestore";
+import { colRef } from "../firebase/firebase";
 import { FaStar } from "react-icons/fa";
 
-const StarRaiting = () => {
+const StarRaiting = async ({ book_id }) => {
   const [raiting, setRaiting] = useState(null);
   const [hover, setHover] = useState(null);
+
+  // const docRef = doc(colRef, where("id", "==", book_id));
+
+  // const raitingHandler = await updateDoc(docRef, {
+  //   raiting: raiting,
+  // });
 
   return (
     <div>
       {[...Array(5)].map((star, i) => {
         const raitingValue = i + 1;
         return (
-          <label>
+          <label key={i}>
             <input
               type="radio"
               name="raiting"

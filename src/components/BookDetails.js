@@ -7,7 +7,7 @@ import StarRaiting from "./StarRaiting";
 export default function BookDetails({ booksList }) {
   const { book_id } = useParams();
 
-  // why code 13-21 doesnt work?
+  // why code 13-21 doesnt work? Catch blocks returns error
 
   // const getBook = async () => {
   //   const q = query(colRef, where("id", "==", book_id));
@@ -50,8 +50,8 @@ export default function BookDetails({ booksList }) {
                 <Card.Text style={{ marginTop: "25px" }}>
                   Oceń książkę
                 </Card.Text>
-                <StarRaiting />
-                <Button style={{ marginTop: "10px" }}>Dodaj Ocenę</Button>
+                <StarRaiting book_id={book_id} />
+                <Button style={{ marginTop: "12px" }}>Dodaj Ocenę</Button>
               </Card.Body>
             </Card.Body>
           </Card>

@@ -14,6 +14,7 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
   const navigate = useNavigate();
 
   const navigateToStartPage = () => {
+    setFilterByType("Wszystkie");
     navigate("/");
   };
   const navigateToLogin = () => {

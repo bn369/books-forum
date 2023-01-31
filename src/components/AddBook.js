@@ -43,6 +43,7 @@ export default function AddBook() {
       id: new Date().getTime(),
       img: fileUrl,
       raiting: [],
+      comments: [],
       title,
       author,
       type,

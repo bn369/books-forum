@@ -10,7 +10,7 @@ export default function StarRaiting({ rating, setRaiting, disabled }) {
     <div
       style={{
         pointerEvents: disabled ? "none" : "auto",
-        opacity: disabled ? 0.5 : 1,
+        opacity: disabled ? 0.7 : 1,
       }}
     >
       {stars5.map((raitingValue) => (

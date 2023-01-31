@@ -4,6 +4,7 @@ import { colRef } from "../firebase/firebase";
 import { Card, Button, Alert } from "react-bootstrap";
 import { Loading } from "./Loading";
 import { useNavigate } from "react-router-dom";
+import StarRaiting from "./StarRaiting";
 
 export default function StartPage({ filterByType, booksList, setBooksList }) {
   const [error, setError] = useState(undefined);
@@ -75,6 +76,7 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
                     <Card.Title>{book.title}</Card.Title>
                     <Card.Title>{book.author}</Card.Title>
                     <Card.Title>{book.type}</Card.Title>
+                    <StarRaiting raiting={book.raiting ?? 0} />
                     <Card.Text>{book.description}</Card.Text>
                     <Button onClick={() => navigate(`book/${book.id}`)}>
                       Czytaj Więcej

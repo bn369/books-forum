@@ -1,26 +1,28 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 
-const AddComment = ({ addComment, comment, setComment }) => {
-  const handleChange = (e) => {
+const AddComment = ({ addComment }) => {
+  const [comment, setComment] = useState("");
+
+  const onSubmit = (e) => {
     e.preventDefault();
-    setComment(e.target.value);
+    addComment(comment);
+    setComment("");
   };
+
   return (
     <div>
-      <Form>
+      <Form onSubmit={onSubmit}>
         <Form.Label>Dodaj Komentarz</Form.Label>
         <textarea
-          onChange={handleChange}
+          onChange={(e) => setComment(e.target.value)}
           value={comment}
           className="form-control"
           type="textArea"
           rows="6"
           required
         />
-        <Button type="submit" onSubmit={addComment}>
-          Prześlij
-        </Button>
+        <Button type="submit">Prześlij</Button>
       </Form>
     </div>
   );

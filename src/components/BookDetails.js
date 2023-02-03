@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { Alert, Card } from "react-bootstrap";
@@ -13,8 +13,6 @@ export default function BookDetails() {
   const { book, isLoading, isUpdating, error, update } =
     useBookLoadable(book_id);
 
-  const [comment, setComment] = useState(undefined);
-
   const setRating = useCallback(
     (rating) => {
       update({ rating });
@@ -24,9 +22,9 @@ export default function BookDetails() {
 
   const addComment = useCallback(
     (comment) => {
-      update({ comments: comment });
+      update({ comments: [...(book?.comments ?? []), comment] });
     },
-    [update]
+    [book?.comments, update]
   );
 
   if (isLoading && book == null) {
@@ -71,12 +69,12 @@ export default function BookDetails() {
             <Card.Title>{book.author}</Card.Title>
             <Card.Title>{book.type}</Card.Title>
             <Card.Text>{book.description}</Card.Text>
-            <AddComment
-              addComment={addComment}
-              comment={comment}
-              setComment={setComment}
-            />
-            <Card.Text>{book.comments}</Card.Text>
+            <AddComment addComment={addComment} />
+            <Card.Text>
+              {book.comments?.map((comm) => (
+                <div>{comm}</div>
+              ))}
+            </Card.Text>
           </Card.Body>
         </Card.Body>
       </Card>

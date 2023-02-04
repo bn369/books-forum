@@ -22,12 +22,16 @@ export default function BookDetails() {
     [update]
   );
 
-  const addComment = useCallback(
-    (comment) => {
-      update({ comments: comment });
-    },
-    [update]
-  );
+  const addComment = () => {
+    console.log(comment);
+  };
+
+  // const addComment = useCallback(
+  //   (comment) => {
+  //     update({ comments: comment });
+  //   },
+  //   [update]
+  // );
 
   if (isLoading && book == null) {
     return <Loading centered />;
@@ -44,6 +48,7 @@ export default function BookDetails() {
           border: "none",
           borderRadius: "0",
           height: "100%",
+          minHeight: "100vh",
           backgroundColor: "rgb(65,66,70)",
           background:
             "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
@@ -66,7 +71,7 @@ export default function BookDetails() {
               />
             </Card.Body>
           </Card.Body>
-          <Card.Body style={{ marginRight: "10%" }}>
+          <Card.Body style={{ marginRight: "10%", marginLeft: "5%" }}>
             <Card.Title>{book.title}</Card.Title>
             <Card.Title>{book.author}</Card.Title>
             <Card.Title>{book.type}</Card.Title>

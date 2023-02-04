@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Form } from "react-bootstrap";
 
 const AddComment = ({ addComment, comment, setComment }) => {
   const handleChange = (e) => {
     e.preventDefault();
     setComment(e.target.value);
+    console.log(comment);
   };
   return (
     <div>
-      <Form>
+      <Form onSubmit={addComment}>
         <Form.Label>Dodaj Komentarz</Form.Label>
         <textarea
           onChange={handleChange}
@@ -18,9 +19,7 @@ const AddComment = ({ addComment, comment, setComment }) => {
           rows="6"
           required
         />
-        <Button type="submit" onSubmit={addComment}>
-          Prześlij
-        </Button>
+        <Button type="submit">Prześlij</Button>
       </Form>
     </div>
   );

@@ -27,7 +27,7 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
       }
     };
     getBooks();
-  }, []);
+  }, [setBooksList]);
   console.log(filterByType);
 
   return (
@@ -60,9 +60,7 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
                 style={{
                   border: "none",
                   height: "100%",
-                  // backgroundColor: "rgb(65,66,70)",
-                  // background:
-                  //   "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
+                  backgroundColor: "#e2e2e2",
                 }}
                 className="text-center text-black"
               >
@@ -70,14 +68,18 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
                   <Card.Img
                     src={book.img}
                     variant="top"
-                    style={{ width: "14rem" }}
+                    style={{ width: "14rem", maxHeight: "26rem" }}
                   />
                   <Card.Body>
                     <Card.Title>{book.title}</Card.Title>
                     <Card.Title>{book.author}</Card.Title>
                     <Card.Title>{book.type}</Card.Title>
                     <StarRaiting raiting={book.raiting ?? 0} />
-                    <Card.Text>{book.description}</Card.Text>
+                    <Card.Text
+                      style={{ maxHeight: "8rem", overflow: "hidden" }}
+                    >
+                      {book.description}
+                    </Card.Text>
                     <Button onClick={() => navigate(`book/${book.id}`)}>
                       Czytaj Więcej
                     </Button>

@@ -27,7 +27,7 @@ export default function StarRaiting({ rating, setRaiting, disabled }) {
           />
           <FaStar
             size={22}
-            color={raitingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
+            color={raitingValue <= (hover || rating) ? "#ffc107" : "#6f6f70"}
             style={{ cursor: "pointer", marginRight: "3px" }}
             onMouseEnter={() => setHover(raitingValue)}
             onMouseLeave={() => setHover(null)}

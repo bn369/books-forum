@@ -9,12 +9,13 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
+import { ALL_BOOKS } from "../globals";
 
 const NavigationBar = ({ isAuth, setFilterByType }) => {
   const navigate = useNavigate();
 
   const navigateToStartPage = () => {
-    setFilterByType("Wszystkie");
+    setFilterByType(ALL_BOOKS);
     navigate("/");
   };
   const navigateToLogin = () => {
@@ -103,7 +104,7 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
               <NavDropdown.Item href="#action/3.8" eventKey="Historyczna">
                 Historyczna
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.9" eventKey="Wszystkie">
+              <NavDropdown.Item href="#action/3.9" eventKey={ALL_BOOKS}>
                 Wszystkie
               </NavDropdown.Item>
             </NavDropdown>

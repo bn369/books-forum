@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getDocs } from "firebase/firestore";
 import { colRef } from "../firebase/firebase";
 import { Card, Button, Alert } from "react-bootstrap";
 import { Loading } from "./Loading";
 import { useNavigate } from "react-router-dom";
 import StarRaiting from "./StarRaiting";
+import { ALL_BOOKS } from "../globals";
 
 export default function StartPage({ filterByType, booksList, setBooksList }) {
   const [error, setError] = useState(undefined);
   const isLoading = booksList == null && error == null;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("init", filterByType);
+    return () => {
+      console.log("deinit");
+    };
+  }, [filterByType]);
 
   useEffect(() => {
     const getBooks = async () => {
@@ -27,8 +35,15 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
       }
     };
     getBooks();
-  }, [setBooksList]);
-  console.log(filterByType);
+  }, []);
+
+  const filteredBooks = useMemo(
+    () =>
+      filterByType === ALL_BOOKS
+        ? booksList
+        : booksList?.filter((book) => book.type === filterByType),
+    [booksList, filterByType]
+  );
 
   return (
     <div
@@ -49,44 +64,37 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
             gap: 10,
           }}
         >
-          {booksList
-            ?.filter((book) => {
-              if (filterByType === "Wszystkie") return book;
-              else return book.type === filterByType;
-            })
-            .map((book, index) => (
-              <Card
-                key={`${book.id}-${index}`}
-                style={{
-                  border: "none",
-                  height: "100%",
-                  backgroundColor: "#e2e2e2",
-                }}
-                className="text-center text-black"
-              >
-                <Card.Body className="d-flex flex-row" key={book.id}>
-                  <Card.Img
-                    src={book.img}
-                    variant="top"
-                    style={{ width: "14rem", maxHeight: "26rem" }}
-                  />
-                  <Card.Body>
-                    <Card.Title>{book.title}</Card.Title>
-                    <Card.Title>{book.author}</Card.Title>
-                    <Card.Title>{book.type}</Card.Title>
-                    <StarRaiting raiting={book.raiting ?? 0} />
-                    <Card.Text
-                      style={{ maxHeight: "8rem", overflow: "hidden" }}
-                    >
-                      {book.description}
-                    </Card.Text>
-                    <Button onClick={() => navigate(`book/${book.id}`)}>
-                      Czytaj Więcej
-                    </Button>
-                  </Card.Body>
+          {filteredBooks?.map((book, index) => (
+            <Card
+              key={`${book.id}-${index}`}
+              style={{
+                border: "none",
+                height: "100%",
+                // backgroundColor: "rgb(65,66,70)",
+                // background:
+                //   "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
+              }}
+              className="text-center text-black"
+            >
+              <Card.Body className="d-flex flex-row" key={book.id}>
+                <Card.Img
+                  src={book.img}
+                  variant="top"
+                  style={{ width: "14rem" }}
+                />
+                <Card.Body>
+                  <Card.Title>{book.title}</Card.Title>
+                  <Card.Title>{book.author}</Card.Title>
+                  <Card.Title>{book.type}</Card.Title>
+                  <StarRaiting rating={book.rating ?? 0} disabled />
+                  <Card.Text>{book.description}</Card.Text>
+                  <Button onClick={() => navigate(`book/${book.id}`)}>
+                    Czytaj Więcej
+                  </Button>
                 </Card.Body>
-              </Card>
-            ))}
+              </Card.Body>
+            </Card>
+          ))}
         </div>
       ) : (
         <Alert variant="danger">{error}</Alert>

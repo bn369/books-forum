@@ -6,7 +6,7 @@ import { bookDoc } from "../firebase/firebase";
 export function useBookLoadable(bookId) {
   const [book, setBook] = React.useState(undefined);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isUpdating, setIsUpdating] = React.useState(false)
+  const [isUpdating, setIsUpdating] = React.useState(false);
   const [error, setError] = React.useState(undefined);
 
   const refresh = React.useCallback(async () => {
@@ -30,18 +30,21 @@ export function useBookLoadable(bookId) {
     refresh();
   }, [refresh]);
 
-  const update = React.useCallback(async (partial) => {
-    try {
-        setIsUpdating(true)
-        await updateDoc(bookDoc(bookId), partial)
-    }catch(e) {
+  const update = React.useCallback(
+    async (partial) => {
+      try {
+        setIsUpdating(true);
+        await updateDoc(bookDoc(bookId), partial);
+      } catch (e) {
         setError(`${e}`);
         console.warn("update document exception", e);
-    } finally {
-        refresh()
-        setIsUpdating(false)
-    }
-  }, [bookId, refresh])
+      } finally {
+        refresh();
+        setIsUpdating(false);
+      }
+    },
+    [bookId, refresh]
+  );
 
   return {
     book,
@@ -49,6 +52,6 @@ export function useBookLoadable(bookId) {
     error,
     refresh,
     update,
-    isUpdating
+    isUpdating,
   };
 }

@@ -7,10 +7,12 @@ import Login from "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
 import { useState } from "react";
+import { ALL_BOOKS } from "./globals";
 
 function App() {
-  const [filterByType, setFilterByType] = useState("wszystkie");
+  const [filterByType, setFilterByType] = useState(ALL_BOOKS);
   const [booksList, setBooksList] = useState(undefined);
+
   return (
     <>
       <AuthProvider>

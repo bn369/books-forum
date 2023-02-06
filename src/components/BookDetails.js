@@ -6,6 +6,7 @@ import StarRaiting from "./StarRaiting";
 import { useBookLoadable } from "./useBookLoadable";
 import { Loading } from "./Loading";
 import AddComment from "./AddComment";
+import { AuthProvider } from "../context/AuthContext";
 
 export default function BookDetails() {
   const { book_id } = useParams();
@@ -36,7 +37,7 @@ export default function BookDetails() {
   }
 
   return (
-    <>
+    <AuthProvider>
       <Card
         style={{
           border: "none",
@@ -71,14 +72,40 @@ export default function BookDetails() {
             <Card.Title>{book.type}</Card.Title>
             <Card.Text>{book.description}</Card.Text>
             <AddComment addComment={addComment} />
-            <Card.Text>
-              {book.comments?.map((comm) => (
-                <div>{comm}</div>
+            <Card.Body style={{ padding: "0" }}>
+              {book.comments?.map((comm, i) => (
+                <Card.Body
+                  key={i}
+                  style={{
+                    border: "2px solid black",
+                    borderRadius: "5px",
+                    marginTop: "10px",
+                    backgroundColor: "#122335",
+                    padding: "0",
+                  }}
+                >
+                  <Card.Body
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      margin: "0",
+                      borderBottom: "1px solid black",
+                      paddingBottom: "0",
+                    }}
+                  >
+                    <Card.Text>{comm.createdBy}</Card.Text>
+                    <Card.Text>{comm.date}</Card.Text>
+                  </Card.Body>
+                  <Card.Text style={{ padding: "20px" }}>
+                    {comm.content}
+                  </Card.Text>
+                </Card.Body>
               ))}
-            </Card.Text>
+            </Card.Body>
           </Card.Body>
         </Card.Body>
       </Card>
-    </>
+    </AuthProvider>
   );
 }

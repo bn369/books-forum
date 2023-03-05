@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getDoc, updateDoc } from "firebase/firestore";
-import { bookDoc } from "../firebase/firebase";
+import { bookDoc } from "../../firebase/firebase";
 
 export function useBookLoadable(bookId) {
   const [book, setBook] = React.useState(undefined);

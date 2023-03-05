@@ -1,17 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  Navbar,
-  Container,
-  Nav,
-  NavDropdown,
-  Form,
-  Button,
-} from "react-bootstrap";
+import React from "react";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { UserAuth } from "../context/AuthContext";
-import { ALL_BOOKS } from "../globals";
+import { UserAuth } from "../../context/AuthContext";
+import { ALL_BOOKS } from "../../globals";
+import { SearchBar } from "./SearchBar";
 
-const NavigationBar = ({ isAuth, setFilterByType }) => {
+const NavigationBar = ({ booksList, setFilterByType, setModal }) => {
   const navigate = useNavigate();
 
   const navigateToStartPage = () => {
@@ -19,7 +13,7 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
     navigate("/");
   };
   const navigateToLogin = () => {
-    navigate("/login");
+    setModal(true);
   };
 
   const { user, logout } = UserAuth();
@@ -43,18 +37,25 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="md" className="">
+    <Navbar
+      bg="dark"
+      variant="dark"
+      expand="md"
+      style={{
+        position: "relative",
+      }}
+    >
       <Container>
         <Navbar.Brand href="#home">
           <img
             className="d-inline-block align-center"
             alt="logo"
-            src={require("../images/logo2.jpg")}
+            src={require("../../images/logo2.jpg")}
             width="90"
             height="60"
             onClick={navigateToStartPage}
           />
-          <span className="navbar-brand mb-0 h1" onClick={navigateToStartPage}>
+          <span className="m-auto h1" onClick={navigateToStartPage}>
             LOGO
           </span>
         </Navbar.Brand>
@@ -73,7 +74,6 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
                 </NavDropdown.Item>
               </NavDropdown>
             )}
-            {isAuth && <Nav.Link href="#link">Forum</Nav.Link>}
             <NavDropdown
               title="Rankingi"
               id="basic-nav-dropdown"
@@ -109,15 +109,7 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+          <SearchBar booksList={booksList} />
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -127,7 +119,7 @@ const NavigationBar = ({ isAuth, setFilterByType }) => {
   <img
     className="d-inline-block align-center"
     alt="logo"
-    src={require("../images/logo2.jpg")}
+    src={require("../../images/logo2.jpg")}
     width="90"
     height="90"
   />

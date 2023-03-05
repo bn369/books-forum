@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { getDocs } from "firebase/firestore";
-import { colRef } from "../firebase/firebase";
+import { colRef } from "../../firebase/firebase";
 import { Card, Button, Alert } from "react-bootstrap";
-import { Loading } from "./Loading";
+import { Loading } from "../actions-for-users/Loading";
 import { useNavigate } from "react-router-dom";
-import StarRaiting from "./StarRaiting";
-import { ALL_BOOKS } from "../globals";
+import StarRating from "../actions-for-users/StarRating";
+import { ALL_BOOKS } from "../../globals";
 
 export default function StartPage({ filterByType, booksList, setBooksList }) {
   const [error, setError] = useState(undefined);
@@ -42,6 +42,7 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
       filterByType === ALL_BOOKS
         ? booksList
         : booksList?.filter((book) => book.type === filterByType),
+    // .sort((a, b) => a.rating.localeCompare(b.rating)) - why doesnt work?
     [booksList, filterByType]
   );
 
@@ -69,10 +70,9 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
               key={`${book.id}-${index}`}
               style={{
                 border: "none",
-                height: "100%",
-                // backgroundColor: "rgb(65,66,70)",
-                // background:
-                //   "linear-gradient(180deg, rgba(65,66,70,1) 0%, rgba(43,43,43,1) 47%, rgba(29,29,29,1) 100%)",
+                height: "22rem",
+                width: "80%",
+                margin: "auto",
               }}
               className="text-center text-black"
             >
@@ -80,15 +80,30 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
                 <Card.Img
                   src={book.img}
                   variant="top"
-                  style={{ width: "14rem" }}
+                  style={{ width: "14rem", height: "20rem" }}
                 />
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
                   <Card.Title>{book.author}</Card.Title>
                   <Card.Title>{book.type}</Card.Title>
-                  <StarRaiting rating={book.rating ?? 0} disabled />
-                  <Card.Text>{book.description}</Card.Text>
-                  <Button onClick={() => navigate(`book/${book.id}`)}>
+                  <StarRating rating={book.rating ?? 0} disabled />
+                  <Card.Text
+                    style={{
+                      height: "8rem",
+                      padding: "5px",
+                      overflow: "hidden",
+                      borderRadius: "5px",
+                      boxShadow: "rgba(0, 0, 0, 0.35) 0px 10px 12px",
+                    }}
+                  >
+                    {book.description}
+                  </Card.Text>
+                  <Button
+                    onClick={() => navigate(`book/${book.id}`)}
+                    style={{
+                      marginBottom: "1rem",
+                    }}
+                  >
                     Czytaj Więcej
                   </Button>
                 </Card.Body>

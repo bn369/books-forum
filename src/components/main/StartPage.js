@@ -37,14 +37,13 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
     getBooks();
   }, []);
 
-  const filteredBooks = useMemo(
-    () =>
+  const filteredBooks = useMemo(() => {
+    const byType =
       filterByType === ALL_BOOKS
         ? booksList
-        : booksList?.filter((book) => book.type === filterByType),
-    // .sort((a, b) => a.rating.localeCompare(b.rating)) - why doesnt work?
-    [booksList, filterByType]
-  );
+        : booksList?.filter((book) => book.type === filterByType);
+    return byType?.sort((a, b) => (b?.rating ?? 0) - (a?.rating ?? 0));
+  }, [booksList, filterByType]);
 
   return (
     <div

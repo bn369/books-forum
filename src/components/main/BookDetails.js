@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { Alert, Button, Card } from "react-bootstrap";
@@ -16,11 +16,30 @@ export default function BookDetails({ setModal }) {
     useBookLoadable(book_id);
 
   const setRating = useCallback(
-    (rating) => {
-      update({ rating });
+    (newValue) => {
+      if (!user?.uid) {
+        return;
+      }
+      const rating_v2 =
+        typeof book?.rating_v2 === "object" ? { ...book?.rating_v2 } : {};
+      rating_v2[user.uid] = newValue;
+      update({ rating_v2 });
     },
-    [update]
+    [book?.rating_v2, update, user?.uid]
   );
+
+  const rating = useMemo(() => {
+    if (typeof book?.rating_v2 !== "object") {
+      return 0;
+    }
+    const ratings = Object.values(book.rating_v2)
+      .map((r) => parseFloat(r))
+      .filter((r) => isFinite(r));
+    if (ratings.length === 0) {
+      return 0;
+    }
+    return ratings.reduce((a, b) => a + b) / ratings.length; //average
+  }, [book?.rating_v2]);
 
   const addComment = useCallback(
     (comment) => {
@@ -63,7 +82,7 @@ export default function BookDetails({ setModal }) {
                 <Card.Text>Oceń książkę</Card.Text>
                 <StarRating
                   disabled={isLoading || isUpdating}
-                  rating={book.rating ?? 0}
+                  rating={rating}
                   setRating={setRating}
                 />
               </Card.Body>

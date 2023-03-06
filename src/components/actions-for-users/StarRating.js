@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
+// import { UserAuth } from "../context/AuthContext";
 
 const stars5 = [1, 2, 3, 4, 5];
 
-export default function StarRaiting({ rating, setRaiting, disabled }) {
+export default function StarRating({ rating, setRating, disabled }) {
   const [hover, setHover] = useState(null);
+
+  // const { user } = UserAuth();
+
+  // const stars = {
+  //   rating: rating,
+  //   user: user.email
+  // }
 
   return (
     <div
@@ -13,23 +21,23 @@ export default function StarRaiting({ rating, setRaiting, disabled }) {
         opacity: disabled ? 0.7 : 1,
       }}
     >
-      {stars5.map((raitingValue) => (
-        <label key={raitingValue}>
+      {stars5.map((ratingValue) => (
+        <label key={ratingValue}>
           <input
             type="radio"
-            name="raiting"
-            value={raitingValue}
+            name="rating"
+            value={ratingValue}
             style={{ display: "none" }}
             onClick={() => {
-              setRaiting(raitingValue);
-              console.log(raitingValue);
+              setRating(ratingValue);
+              console.log(ratingValue);
             }}
           />
           <FaStar
             size={22}
-            color={raitingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
+            color={ratingValue <= (hover || rating) ? "#ffc107" : "#6f6f70"}
             style={{ cursor: "pointer", marginRight: "3px" }}
-            onMouseEnter={() => setHover(raitingValue)}
+            onMouseEnter={() => setHover(ratingValue)}
             onMouseLeave={() => setHover(null)}
           />
         </label>

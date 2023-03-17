@@ -6,6 +6,7 @@ import { Loading } from "../actions-for-users/Loading";
 import { useNavigate } from "react-router-dom";
 import StarRating from "../actions-for-users/StarRating";
 import { ALL_BOOKS } from "../../globals";
+import { RatingWrapper } from "../RatingWrapper";
 
 export default function StartPage({ filterByType, booksList, setBooksList }) {
   const [error, setError] = useState(undefined);
@@ -85,7 +86,7 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
                   <Card.Title>{book.title}</Card.Title>
                   <Card.Title>{book.author}</Card.Title>
                   <Card.Title>{book.type}</Card.Title>
-                  <StarRating rating={book.rating ?? 0} disabled />
+                  <RatingWrapper book={book} />
                   <Card.Text
                     style={{
                       height: "8rem",

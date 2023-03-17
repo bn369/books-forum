@@ -1,45 +1,18 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { Alert, Button, Card } from "react-bootstrap";
-import StarRating from "../actions-for-users/StarRating";
 import { useBookLoadable } from "../hooks/useBookLoadable";
 import { Loading } from "../actions-for-users/Loading";
 import AddComment from "../actions-for-users/AddComment";
 import { AuthProvider, UserAuth } from "../../context/AuthContext";
+import { RatingWrapper } from "../RatingWrapper";
 
 export default function BookDetails({ setModal }) {
   const { book_id } = useParams();
   const { user } = UserAuth();
 
-  const { book, isLoading, isUpdating, error, update } =
-    useBookLoadable(book_id);
-
-  const setRating = useCallback(
-    (newValue) => {
-      if (!user?.uid) {
-        return;
-      }
-      const rating_v2 =
-        typeof book?.rating_v2 === "object" ? { ...book?.rating_v2 } : {};
-      rating_v2[user.uid] = newValue;
-      update({ rating_v2 });
-    },
-    [book?.rating_v2, update, user?.uid]
-  );
-
-  const rating = useMemo(() => {
-    if (typeof book?.rating_v2 !== "object") {
-      return 0;
-    }
-    const ratings = Object.values(book.rating_v2)
-      .map((r) => parseFloat(r))
-      .filter((r) => isFinite(r));
-    if (ratings.length === 0) {
-      return 0;
-    }
-    return ratings.reduce((a, b) => a + b) / ratings.length; //average
-  }, [book?.rating_v2]);
+  const { book, isLoading, error, update } = useBookLoadable(book_id);
 
   const addComment = useCallback(
     (comment) => {
@@ -80,11 +53,7 @@ export default function BookDetails({ setModal }) {
             {user ? (
               <Card.Body style={{ marginLeft: "10%" }}>
                 <Card.Text>Oceń książkę</Card.Text>
-                <StarRating
-                  disabled={isLoading || isUpdating}
-                  rating={rating}
-                  setRating={setRating}
-                />
+                <RatingWrapper update={update} book={book} />
               </Card.Body>
             ) : (
               <Card.Body>

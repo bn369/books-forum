@@ -31,7 +31,6 @@ export default function AddBook() {
     const document = {
       id: new Date().getTime(),
       img: fileUrl,
-      rating: [],
       comments: [],
       title,
       author,

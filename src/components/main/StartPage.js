@@ -4,8 +4,8 @@ import { colRef } from "../../firebase/firebase";
 import { Card, Button, Alert } from "react-bootstrap";
 import { Loading } from "../actions-for-users/Loading";
 import { useNavigate } from "react-router-dom";
-import StarRating from "../actions-for-users/StarRating";
 import { ALL_BOOKS } from "../../globals";
+import StarRatingProvider from "../star-rating/StarRatingProvider";
 
 export default function StartPage({ filterByType, booksList, setBooksList }) {
   const [error, setError] = useState(undefined);
@@ -85,7 +85,7 @@ export default function StartPage({ filterByType, booksList, setBooksList }) {
                   <Card.Title>{book.title}</Card.Title>
                   <Card.Title>{book.author}</Card.Title>
                   <Card.Title>{book.type}</Card.Title>
-                  <StarRating rating={book.rating ?? 0} disabled />
+                  <StarRatingProvider book={book} />
                   <Card.Text
                     style={{
                       height: "8rem",
